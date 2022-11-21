@@ -1,0 +1,10 @@
+{
+  "name": "Auto Layout Wrapper",
+  "id": "1175752053634002622",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "editorType": [
+    "figma"
+  ],
+  "ui": "dist/index.html"
+}
