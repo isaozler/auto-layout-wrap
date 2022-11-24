@@ -45,6 +45,8 @@ export const getGap = (elements: readonly SceneNode[], direction: EDirection, fa
 }
 
 export const sortElementByProp = (elements: readonly SceneNode[], prop: keyof TSceneNodePositionProp | keyof TSceneNodeDimensionProp, isDesc?: boolean) => {
+  console.log('DIRECTION TO SORT', prop)
+
   const sortedElements = [...elements].sort((a, b) => b[prop] - a[prop])
   return !!isDesc ? sortedElements.reverse() : sortedElements
 }
@@ -75,7 +77,6 @@ export const frameSelection = (elements: readonly SceneNode[], params: TActionPa
     }
 
     sortedElements.forEach((child, index) => {
-      child.name = `element-${index + 1}`
       frame.appendChild(child)
     })
 
@@ -84,7 +85,14 @@ export const frameSelection = (elements: readonly SceneNode[], params: TActionPa
 }
 
 export const getFrameGroups = (elements: readonly SceneNode[], params: TActionParams) => {
-  const sortedElements = sortElementByProp(elements, params.direction, params.direction === EDirection.HORIZONTAL)
+  let sortedElements = [...elements]
+
+  const direction = params.direction === EDirection.VERTICAL ? 'y' : 'x'
+
+  if (params.isSkipSorting) {
+    sortedElements = sortElementByProp(elements, direction, params.direction === EDirection.HORIZONTAL)
+  }
+
   const frameGroups = [...sortedElements].reduce((res, node, index) => {
     const chunkIndex = Math.floor(index / params.count)
 
@@ -97,7 +105,7 @@ export const getFrameGroups = (elements: readonly SceneNode[], params: TActionPa
     return res
   }, [] as SceneNode[][])
 
-  return params.direction === EDirection.HORIZONTAL ? frameGroups : frameGroups.reduce((res, group) => ([...res, group.reverse()]), [] as SceneNode[][])
+  return params.direction === EDirection.HORIZONTAL ? frameGroups : frameGroups.reduce((res, group) => ([...res, group.reverse()]), [] as SceneNode[][]).reverse()
 }
 
 export const getMinMaxDimensions = (frame: FrameNode, direction: EDirection) => {

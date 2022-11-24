@@ -23,7 +23,7 @@ figma.ui.onmessage = (action: TAction) => {
 
     if (!isNaN(params.count) && params.count > 0 && params.count < selectionElements.length) {
       const elements = sortElementByProp(selectionElements, params.direction === EDirection.VERTICAL ? 'y' : 'x')
-      const [firstElement] = params.direction === EDirection.VERTICAL ? [...elements] : [...elements].reverse()
+      const [firstElement] = /* params.direction === EDirection.VERTICAL ? [...elements] : */[...elements].reverse()
       const gap = getGap(elements, params.direction)
       const parentFrame = figma.createFrame()
       parentFrame.x = firstElement.x
@@ -32,7 +32,9 @@ figma.ui.onmessage = (action: TAction) => {
       parentFrame.itemSpacing = params.gap || gap
       parentFrame.fills = []
 
+      params.isSkipSorting = true
       const groups = getFrameGroups(elements, params)
+
       groups.forEach((group) => {
         if (group) {
           const frame = frameSelection(group, params)
